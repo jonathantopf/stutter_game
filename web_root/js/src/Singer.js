@@ -135,16 +135,6 @@ Singer.Character.prototype.setup = function ()
 
 
 // ----------------------------------------------------------------------------------------------------
-// behaviors 
-// ----------------------------------------------------------------------------------------------------
-
-Singer.Character.prototype.blink = function()
-{
-    this.blinking = 0.01;
-}
-
-
-// ----------------------------------------------------------------------------------------------------
 // sing/talk 
 // ----------------------------------------------------------------------------------------------------
 
@@ -181,6 +171,11 @@ Singer.Character.prototype.update = function (tick)
         }
     }
 
+    if (Math.random() > 0.992)
+    {
+        this.blinking = 0.01;
+    }
+
     // blink
     if (this.blinking < 1)
     {
@@ -197,7 +192,7 @@ Singer.Character.prototype.update = function (tick)
 
         if (Math.random() > 0.4)
         {
-            this.blink();
+            this.blinking = 0.01;
         }
     }
 

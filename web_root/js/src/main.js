@@ -97,55 +97,9 @@ var render = function()
 {
     stats.begin();
 
-    if (singer.loaded){
-        if (Math.random() > 0.992)
-        {
-            singer.blink();
-        }
-
-        for (var letter in Keyboard.status)
-        {
-            if (Keyboard.status[letter] == 1)
-            {
-                // play sound
-                Music.notes[key_music_map[letter]].play()
-                // set mouth
-                switch (letter){
-                    case 'a': 
-                        singer.sing('ooo');
-                        break;
-                    case 's':
-                        singer.sing('aaa');
-                        break;
-                    case 'd': 
-                        singer.sing('ooo');
-                        break;
-                    case 'f':
-                        singer.sing('aaa');
-                        break;
-                    case 'g': 
-                        singer.sing('ooo');
-                        break;
-                    case 'h':
-                        singer.sing('aaa');
-                        break;
-                    case 'j': 
-                        singer.sing('ooo');
-                        break;
-                }
-
-            } else if(Keyboard.status[letter] == 3) {
-                // stop sound
-                Music.notes[key_music_map[letter]].pause()
-                // reset mouth
-                singer.talk('smile')
-            }
-
-        }
+    if (loading_indicator.completed){
+        
     }
-
-    sentence.update(tick);
-
 
     loading_indicator.update(tick);
     singer.update(tick);

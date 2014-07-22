@@ -359,23 +359,3 @@ JitterText.Paragraph.prototype.show_cycle = function ()
 }
 
 
-
-
-
-// test
-
-var sentence = new JitterText.Paragraph([
-    {
-        text: 'test text string... '
-    },
-    {
-        text: 'next word',
-        new_line: true
-    },
-    {
-        text: 'next line'
-    }
-]);
-
-sentence.show();
-

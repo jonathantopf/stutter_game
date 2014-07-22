@@ -166,11 +166,7 @@ JitterText.Text = function (text, color, jitter_freq, jitter_scale, scale)
     this.visible = true;
     this.safe_text = text.toUpperCase();
     this.scene_object = new THREE.Object3D();
-    this.material = new THREE.LineBasicMaterial({
-        color: color,
-        linewidth: 1,
-        linejoin: "mitre"
-    });
+    this.materials = [];
 
     // build letters
 
@@ -192,7 +188,14 @@ JitterText.Text = function (text, color, jitter_freq, jitter_scale, scale)
                 var vert = letter_object["data"][j][l];
                 line_geo.vertices.push(new THREE.Vector3(vert[0], vert[1], 0));
             }
-            var line = new THREE.Line(line_geo, this.material);
+
+            var letter_mat = new THREE.LineBasicMaterial({
+                color: color,
+                linewidth: 1,
+                linejoin: "mitre"
+            });
+
+            var line = new THREE.Line(line_geo, letter_mat);
             line.position.x = this.cursor;
             this.scene_object.add(line);
         }
@@ -253,7 +256,6 @@ JitterText.Text.prototype.update = function (tick)
 //     }
 // ]
 
-
 JitterText.Paragraph = function (text_chunks) 
 {
     this.text_chunks = text_chunks;
@@ -262,7 +264,7 @@ JitterText.Paragraph = function (text_chunks)
     this.line_height = 1.3;
     this.visibility_phase_state = 0;
     this.visible = false;
-    this.show_speed = 6;
+    this.show_speed = 1;
 
     this.scene_object.position.z = 575;
     this.scene_object.position.x = -10;
@@ -328,7 +330,7 @@ JitterText.Paragraph.prototype.update = function (tick)
     }
 
     // show
-    if (this.visible = true)
+    if (this.visible == true)
     {
         this.show_cycle();
     }
@@ -360,10 +362,6 @@ JitterText.Paragraph.prototype.show_cycle = function ()
 
 
 
-
-
-
-
 // test
 
 var sentence = new JitterText.Paragraph([
@@ -378,4 +376,6 @@ var sentence = new JitterText.Paragraph([
         text: 'next line'
     }
 ]);
+
+sentence.show();
 

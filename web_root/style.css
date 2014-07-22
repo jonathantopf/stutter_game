@@ -1,0 +1,23 @@
+body {
+    padding: 0;
+    margin: 0;
+    background: #111111;
+}
+
+#container {
+    background: #000;
+    width: 660px;
+    height: 330px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    border: 1px solid #222222;
+}
+
+#viewport {
+    background: #000000;
+    width: 220px;
+    height: 110px;
+    -webkit-transform: scale3d(3.0, 3.0, 1.0);
+    -webkit-transform-origin: 0 0 0;
+}

@@ -27,13 +27,11 @@ Singer.Character = function ()
     this.character_head  = new THREE.Object3D();
     this.character_eyes  = new THREE.Object3D();
     this.character_mouth = new THREE.Object3D();
-    this.point_light     = new THREE.PointLight( 0xFFFFFF, 0);
     this.scene_object.add(this.character_root);
     this.scene_object.add(this.notes_root);
     this.character_root.add(this.character_head);
     this.character_head.add(this.character_eyes);
     this.character_head.add(this.character_mouth);
-    this.scene_object.add(this.point_light);
     this.material_white = new THREE.MeshLambertMaterial();
     this.material_black = new THREE.MeshBasicMaterial();
 
@@ -53,12 +51,7 @@ Singer.Character = function ()
         this.notes_root.add(note.scene_object);
     }
 
-
     // position objects
-    this.point_light.position.x = -100;
-    this.point_light.position.y = 100;
-    this.point_light.position.z = 130;
-
     this.character_root.position.x = 130;
     this.character_root.position.y = -15;
     this.character_root.rotation.y = Commands.toRadians(-45);
@@ -162,19 +155,6 @@ Singer.Character.prototype.talk = function(shape)
 
 Singer.Character.prototype.update = function (tick) 
 {
-    // fade up light when loaded
-    if (this.loaded)
-    {
-        if (this.point_light.intensity < 1)
-        {
-            this.point_light.intensity += 0.005;
-        }
-    }
-
-    if (Math.random() > 0.992)
-    {
-        this.blinking = 0.01;
-    }
 
     // blink
     if (this.blinking < 1)

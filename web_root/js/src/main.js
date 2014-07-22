@@ -86,6 +86,9 @@ singer.load(function () {
 });
 scene.add(singer.scene_object);
 
+var light_rig = new Lights.Rig()
+scene.add(light_rig.scene_object);
+
 
 // ----------------------------------------------------------------------------------------------------
 // render loop 

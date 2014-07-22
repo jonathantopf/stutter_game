@@ -15,6 +15,7 @@ LoadingIndicator.Indicator = function()
 {
     this.eval = true;
     this.loading = true;
+    this.completed = false;
     this.hide = false;
     this.degrees = 0;
     this.min_degrees = Commands.toRadians(720); // rotate this many times minimum - helps stop the loading object strobing
@@ -74,6 +75,7 @@ LoadingIndicator.Indicator.prototype.update = function (tick)
             if (this.gap >= 360)
             {
                 this.eval = false;
+                this.completed = true;
             } else {
                 if (this.scene_object.rotation.z < (-1 * this.min_degrees))
                 {

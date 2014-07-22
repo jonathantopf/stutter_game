@@ -320,7 +320,6 @@ JitterText.Paragraph.prototype.hide = function ()
 
 
 
-
 JitterText.Paragraph.prototype.update = function (tick)
 {
     // update children

@@ -120,25 +120,25 @@ var render = function()
                 // set mouth
                 switch (letter){
                     case 'a': 
-                        singer.setMouth('ooo');
+                        singer.sing('ooo');
                         break;
                     case 's':
-                        singer.setMouth('aaa');
+                        singer.sing('aaa');
                         break;
                     case 'd': 
-                        singer.setMouth('ooo');
+                        singer.sing('ooo');
                         break;
                     case 'f':
-                        singer.setMouth('aaa');
+                        singer.sing('aaa');
                         break;
                     case 'g': 
-                        singer.setMouth('ooo');
+                        singer.sing('ooo');
                         break;
                     case 'h':
-                        singer.setMouth('aaa');
+                        singer.sing('aaa');
                         break;
                     case 'j': 
-                        singer.setMouth('ooo');
+                        singer.sing('ooo');
                         break;
                 }
 
@@ -146,7 +146,7 @@ var render = function()
                 // stop sound
                 Music.notes[key_music_map[letter]].pause()
                 // reset mouth
-                singer.setMouth('smile')
+                singer.talk('smile')
             }
 
         }

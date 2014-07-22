@@ -11,24 +11,24 @@ Lights.Rig = function ()
     // create lights
     this.lights = 
     {
-        key : 
+        'key' : 
         {
             light: new THREE.PointLight( 0xFFFFFF, 0),
-            target_intensity : 1,
+            target_intensity : 0,
             speed: 0.005
         }
     }
 
-    console.log(new THREE.PointLight( 0xFFFFFF, 1));
+    this.light_keys = Object.keys(this.lights);
 
     // add to scene
     this.scene_object = new THREE.Object3D();
-    this.scene_object.add(this.lights.key.light);
+    this.scene_object.add(this.lights['key'].light);
 
     // position lights
-    this.lights.key.light.position.x = -100;
-    this.lights.key.light.position.y = 100;
-    this.lights.key.light.position.z = 130;
+    this.lights['key'].light.position.x = -100;
+    this.lights['key'].light.position.y = 100;
+    this.lights['key'].light.position.z = 130;
 }
 
 
@@ -38,11 +38,11 @@ Lights.Rig = function ()
 
 Lights.Rig.prototype.update = function (update)
 {
-    for (var key in this.lights)
+    for (var i = 0; i < this.light_keys.length; i++)
     {
-        if (this.lights[key].light.intensity < this.lights[key].target_intensity)
+        if (this.lights[this.light_keys[i]].light.intensity < this.lights[this.light_keys[i]].target_intensity)
         {
-            this.lights[key].light.intensity += this.lights[key].speed;
+            this.lights[this.light_keys[i]].light.intensity += this.lights[this.light_keys[i]].speed;
         }
     }
 }

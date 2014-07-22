@@ -91,6 +91,15 @@ scene.add(light_rig.scene_object);
 
 
 // ----------------------------------------------------------------------------------------------------
+// Logic
+// ----------------------------------------------------------------------------------------------------
+
+Logic.singer = singer;
+Logic.light_rig = light_rig;
+Logic.loaiding_indicator = loading_indicator;
+
+
+// ----------------------------------------------------------------------------------------------------
 // render loop 
 // ----------------------------------------------------------------------------------------------------
 
@@ -100,17 +109,18 @@ var render = function()
 {
     stats.begin();
 
-    if (loading_indicator.completed){
-        
-    }
-
+    // logic
+    Logic.update(tick);
+    // update game components
     loading_indicator.update(tick);
+    light_rig.update(tick);
     singer.update(tick);
-    Keyboard.update();
+    Keyboard.update(tick);
     // draw!
     requestAnimationFrame(render);
     renderer.render(scene, camera);
     tick++;
+
     stats.end();
 }
 

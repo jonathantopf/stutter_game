@@ -132,8 +132,6 @@ function onKeyUp(event){
 // update key function 
 // ----------------------------------------------------------------------------------------------------
 
-// call this function each time after progream logic has run to step key status to next state
-
 Keyboard.update = function () 
 {
     for (var key in Keyboard.status)

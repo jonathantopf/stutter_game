@@ -155,8 +155,9 @@ Singer.Character.prototype.talk = function(shape)
 
 Singer.Character.prototype.update = function (tick) 
 {
+    // blinking
+    if (Math.random() > 0.992 { this.blinking = 0.01; }
 
-    // blink
     if (this.blinking < 1)
     {
         this.blinking *= 2;

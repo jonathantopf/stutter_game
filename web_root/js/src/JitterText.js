@@ -1,9 +1,5 @@
 // copyright Jonathan Topf 2014
 
-// class to create singing character
-
-// requires THREE.js
-
 var JitterText = {};
 
 // ----------------------------------------------------------------------------------------------------
@@ -164,13 +160,15 @@ JitterText.Text = function (text, color, jitter_freq, jitter_scale, scale)
     this.color = color;
     this.text = text;
     this.visible = true;
-    this.safe_text = text.toUpperCase();
+    this.visibility_phase_state = 0;
+    this.show_speed = 1;
+    this.safe_text = this.text.toUpperCase();
     this.scene_object = new THREE.Object3D();
     this.materials = [];
 
     // build letters
 
-    line_geos = [];
+    this.line_geos = [];
     this.cursor = 0;
 
     for (var i = 0; i < this.safe_text.length; i ++)
@@ -195,13 +193,15 @@ JitterText.Text = function (text, color, jitter_freq, jitter_scale, scale)
                 linejoin: "mitre"
             });
 
+            letter_mat.visible = false;
+
             var line = new THREE.Line(line_geo, letter_mat);
             line.position.x = this.cursor;
             this.scene_object.add(line);
+            this.line_geos.push(line);
         }
         this.cursor += letter_object["bbox"][1];
     }
-    this.scene_object.position.x = -7.8;
 };
 
 
@@ -236,125 +236,24 @@ JitterText.Text.prototype.update = function (tick)
             }
 
         }
+        this.show_cycle();
     }
 };
 
-
-// ----------------------------------------------------------------------------------------------------
-// Paragraph constructor
-// ----------------------------------------------------------------------------------------------------
-
-// text_chunks param should be in the following format
-// [
-//     {
-//         text: 'some string\n',
-//         color: 0xf000000,
-//         jitter_freq: 4,
-//         jitter_scale: 0.05,
-//         scale: 1,
-//         new_line: false
-//     }
-// ]
-
-JitterText.Paragraph = function (text_chunks) 
-{
-    this.text_chunks = text_chunks;
-    this.text_objects = [];
-    this.scene_object = new THREE.Object3D();
-    this.line_height = 1.3;
-    this.visibility_phase_state = 0;
-    this.visible = false;
-    this.show_speed = 1;
-
-    this.scene_object.position.z = 575;
-    this.scene_object.position.x = -10;
-
-    var line_number = 0;
-    var cursor = 0;
-
-    for (var i = 0; i < this.text_chunks.length; i ++)
-    {
-        var text_object = new JitterText.Text(
-            this.text_chunks[i].text,
-            this.text_chunks[i].color,
-            this.text_chunks[i].jitter_freq,
-            this.text_chunks[i].jitter_scale,
-            this.text_chunks[i].scale
-        )
-
-        // hide letters
-        for (var j = 0; j < text_object.scene_object.children.length; j++)
-        {
-            text_object.scene_object.children[j].material.visible = false;
-        }
-
-        // flow text
-        text_object.scene_object.position.y = -this.line_height * line_number;
-        text_object.scene_object.position.x = cursor;
-
-        if (this.text_chunks[i].new_line == true)
-        { 
-            line_number++; 
-            cursor = 0;
-        } else {
-            cursor += text_object.cursor;
-        }
-
-        this.text_objects.push(text_object);
-        this.scene_object.add(text_object.scene_object);
-    }
-}
-
-
-JitterText.Paragraph.prototype.show = function (speed)
-{
-    this.visible = true;
-    if (speed != undefined) {this.show_speed = speed;}
-}
-
-
-JitterText.Paragraph.prototype.hide = function ()
-{
-    this.visible = false;
-}
-
-
-
-JitterText.Paragraph.prototype.update = function (tick)
-{
-    // update children
-    for (var i = 0; i < this.text_objects.length; i++)
-    {
-        this.text_objects[i].update(tick);
-    }
-
-    // show
-    if (this.visible == true)
-    {
-        this.show_cycle();
-    }
-}
-
-
-JitterText.Paragraph.prototype.show_cycle = function ()
+JitterText.Text.prototype.show_cycle = function ()
 {
     if (this.visibility_phase_state == this.show_speed)
     {
-        for (var i = 0; i < this.scene_object.children.length; i++)
+        for (var i = 0; i < this.line_geos.length; i++)
         {
-            for (var j = 0; j < this.scene_object.children[i].children.length; j++)
+            if (this.line_geos[i].material.visible == false)
             {
-                if (this.scene_object.children[i].children[j].material.visible == false)
-                {
-                    this.scene_object.children[i].children[j].material.visible = true;
-                    this.visibility_phase_state = 0;
-                    return; 
-                }
+                this.line_geos[i].material.visible = true;
+                this.visibility_phase_state = 0;
+                return; 
             }
         } 
     } else {
         this.visibility_phase_state ++;
     }
 }
-
-

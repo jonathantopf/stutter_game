@@ -5,6 +5,7 @@ var Logic = {};
 Logic.singer;
 Logic.light_rig;
 Logic.loaiding_indicator;
+Logic.text_canvas;
 
 
 // ----------------------------------------------------------------------------------------------------
@@ -17,9 +18,11 @@ Logic.init = function ()
     {
         'loading'     : new Commands.Wait(Logic.loaiding_indicator),
         'lights_up'   : new Commands.Lights(Logic.light_rig.lights['key'], {value : 1, speed : 0.01}),
-        'pause'       : new Commands.Sleep(3),
-        'lights_down' : new Commands.Lights(Logic.light_rig.lights['key'], {value : 0, speed : 0.01}),
+        'pause'       : new Commands.Sleep(1),
+        'hello'       : new Commands.Speak('Hello there!', Logic.text_canvas),
         'test'        : new Commands.Sleep(3),
+        'numm'        : new Commands.ClearCanvas(Logic.text_canvas),
+        'lights_down' : new Commands.Lights(Logic.light_rig.lights['key'], {value : 0, speed : 0.01}),
         'end'         : new Commands.End()
     }
 
@@ -31,14 +34,13 @@ Logic.init = function ()
         if (Logic.script[Logic.script_keys[i]].next == null)
         {
             Logic.script[Logic.script_keys[i]].next = Logic.script_keys[i + 1];
-            Logic.script[Logic.script_keys[i]].name = Logic.script_keys[i];
+            Logic.script[Logic.script_keys[i]].command_name = Logic.script_keys[i];
         }
     } 
+
     // initialise first step of game
     Logic.current_step = Logic.script['loading'];
-    console.log('Initialised at step : ' + Logic.current_step.name);
-
-
+    console.log('Initialised at step : ' + Logic.current_step.command_name);
 }
 
 
@@ -52,7 +54,7 @@ Logic.update = function (tick)
     {
         Logic.current_step.completed = false;
         Logic.current_step = Logic.script[Logic.current_step.next];
-        console.log('Current_step : ' + Logic.current_step.name);
+        console.log('Current_step : ' + Logic.current_step.command_name);
     }
-    Logic.current_step.update(tick);
+    Logic.current_step.updateWrapper(tick);
 }

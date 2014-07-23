@@ -54,7 +54,7 @@ Singer.Character = function ()
     // position objects
     this.character_root.position.x = 130;
     this.character_root.position.y = -15;
-    this.character_root.rotation.y = Commands.toRadians(-45);
+    this.character_root.rotation.y = Utils.toRadians(-45);
 
     this.character_eyes.position.y = 60;
 
@@ -83,7 +83,7 @@ Singer.Character.prototype.load = function (on_load_callback)
     // on load
     var dummy_this = this; // hack to let you use this. inside a callback 
 
-    Commands.loadObjs(obj_url_array, function (obj_list) {
+    Utils.loadObjs(obj_url_array, function (obj_list) {
         dummy_this.body  = obj_list[0];
         dummy_this.eyes  = obj_list[1];
         dummy_this.head  = obj_list[2];
@@ -272,7 +272,7 @@ Singer.Note.prototype.reset = function ()
     this.scene_object.position.y = 0;
     this.scene_object.position.z = 0;
 
-    this.scene_object.rotation.z += Commands.toRadians(Math.random() * -70);
+    this.scene_object.rotation.z += Utils.toRadians(Math.random() * -70);
 
     this.material.visible = true;
 }

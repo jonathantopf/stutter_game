@@ -18,7 +18,7 @@ LoadingIndicator.Indicator = function()
     this.completed = false;
     this.hide = false;
     this.degrees = 0;
-    this.min_degrees = Commands.toRadians(720); // rotate this many times minimum - helps stop the loading object strobing
+    this.min_degrees = Utils.toRadians(720); // rotate this many times minimum - helps stop the loading object strobing
     this.numpoints = 24;
     this.rotate_speed = 0.15;
     this.rad = 20;
@@ -53,8 +53,8 @@ LoadingIndicator.Indicator.prototype.buildLine = function (gap_angle) {
 
     for (var i = 0; i <= this.numpoints; i++)
     {
-        y = Math.sin(Commands.toRadians(step * i)) * this.rad;
-        x = Math.cos(Commands.toRadians(step * i)) * this.rad;
+        y = Math.sin(Utils.toRadians(step * i)) * this.rad;
+        x = Math.cos(Utils.toRadians(step * i)) * this.rad;
 
         vertices.push(new THREE.Vector3(x, y, 0)); 
     }

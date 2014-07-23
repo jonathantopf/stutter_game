@@ -1,12 +1,12 @@
 // copyright Jonathan Topf 2014
 
-var Commands = {};
+var Utils = {};
 
 // ----------------------------------------------------------------------------------------------------
 // toRadians 
 // ----------------------------------------------------------------------------------------------------
 
-Commands.toRadians = function (angle)
+Utils.toRadians = function (angle)
 {
   return angle * (Math.PI / 180);
 }
@@ -16,7 +16,7 @@ Commands.toRadians = function (angle)
 // loadObjs - creates a list of geometry objects from a list of urls 
 // ----------------------------------------------------------------------------------------------------
 
-Commands.loadObjs = function(obj_url_array, all_loaded_callback) 
+Utils.loadObjs = function(obj_url_array, all_loaded_callback) 
 {
     dummy_this = this;
     this.obj_url_array = obj_url_array;

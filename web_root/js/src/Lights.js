@@ -43,6 +43,8 @@ Lights.Rig.prototype.update = function (update)
         if (this.lights[this.light_keys[i]].light.intensity < this.lights[this.light_keys[i]].target_intensity)
         {
             this.lights[this.light_keys[i]].light.intensity += this.lights[this.light_keys[i]].speed;
+        } else if (this.lights[this.light_keys[i]].light.intensity > this.lights[this.light_keys[i]].target_intensity){
+            this.lights[this.light_keys[i]].light.intensity -= this.lights[this.light_keys[i]].speed;
         }
     }
 }

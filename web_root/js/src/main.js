@@ -98,6 +98,8 @@ Logic.singer = singer;
 Logic.light_rig = light_rig;
 Logic.loaiding_indicator = loading_indicator;
 
+Logic.init();
+
 
 // ----------------------------------------------------------------------------------------------------
 // render loop 

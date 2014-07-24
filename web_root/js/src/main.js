@@ -89,9 +89,10 @@ scene.add(singer.scene_object);
 var light_rig = new Lights.Rig();
 scene.add(light_rig.scene_object);
 
-var text_canvas = new TextCanvas.Canvas();
-text_canvas.singer = singer;
-scene.add(text_canvas.scene_object);
+var text_buffer = new LineText.Buffer();
+text_buffer.singer = singer;
+scene.add(text_buffer.scene_object);
+
 
 // ----------------------------------------------------------------------------------------------------
 // Logic
@@ -100,7 +101,7 @@ scene.add(text_canvas.scene_object);
 Logic.singer = singer;
 Logic.light_rig = light_rig;
 Logic.loaiding_indicator = loading_indicator;
-Logic.text_canvas = text_canvas;
+Logic.text_buffer = text_buffer;
 
 Logic.init();
 
@@ -119,7 +120,7 @@ var render = function()
     Logic.update(tick);
     // update game components
     loading_indicator.update(tick);
-    text_canvas.update(tick);
+    text_buffer.update(tick);
     light_rig.update(tick);
     singer.update(tick);
     Keyboard.update(tick);

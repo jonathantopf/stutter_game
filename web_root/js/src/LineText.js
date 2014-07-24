@@ -1,12 +1,12 @@
 // copyright Jonathan Topf 2014
 
-var JitterText = {};
+var LineText = {};
 
 // ----------------------------------------------------------------------------------------------------
 // letter data built using maya 
 // ----------------------------------------------------------------------------------------------------
 
-JitterText.letters =
+LineText.char_points =
     {
     "!": {
         "data": [[[0.07142471594577382, 0.9477487751610234], [0.07142471594577382, 0.29274126660461386]], [[0.018566848916061307, 0.12431076440439393], [0.14021110050510943, 0.03073826318204964]], [[0.04335296557907031, 0.0213810130598151], [0.10885371643471209, 0.12431076440439393]]], 
@@ -140,76 +140,58 @@ JitterText.letters =
     }
     
 
-
 // ----------------------------------------------------------------------------------------------------
-// Text constructor 
+// Character
 // ----------------------------------------------------------------------------------------------------
-// Text is a single piece of text with its own line effects such as jutter and color
 
-JitterText.Text = function (text, color, jitter_freq, jitter_scale, scale)
+LineText.Character = function (character, args)
 {
-    if (color        == undefined) { color = 0xffffff; };
-    if (jitter_freq  == undefined) { jitter_freq = 4; };
-    if (jitter_scale == undefined) { jitter_scale = 0.05; };
-    if (scale        == undefined) { scale = 1; };
+    this.character = character;
 
-    this.jitter_freq = jitter_freq;
-    this.jitter_phase = 0; // 0 = update 
-    this.jitter_scale = jitter_scale;
-    this.scale = scale;
-    this.color = color;
-    this.text = text;
-    this.visible = true;
-    this.visibility_phase_state = 0;
-    this.show_speed = 1;
-    this.safe_text = this.text.toUpperCase();
+    this.width = LineText.char_points[this.character]["bbox"][1];
+
+    this.jitter_freq = 3;
+    this.jitter_mult = 1;
+    this.color = 0xffffff;
+    this.cycle_color = false;
+    this.sparkle = false;
+    this.visible = false;    
+    
+    // state
+    this.jitter_phase = 0;
+
+    // THREE objects
     this.scene_object = new THREE.Object3D();
-    this.materials = [];
 
-    // build letters
+    this.material = new THREE.LineBasicMaterial({
+        color: this.color,
+        linewidth: 1,
+        linejoin: "mitre"
+    });
 
-    this.line_geos = [];
-    this.cursor = 0;
+    this.geometry = [];
 
-    for (var i = 0; i < this.safe_text.length; i ++)
+    for (var j = 0; j < LineText.char_points[this.character]["data"].length; j++)
     {
-        var letter = this.safe_text.charAt(i);
-        var letter_object = JitterText.letters[letter];
-        
-        for (var j = 0; j < letter_object["data"].length; j++)
+        var line_geo = new THREE.Geometry();
+        line_geo.base_geo = LineText.char_points[this.character]["data"][j]; // add original geo as an attr to allow jittering
+
+        for (var l = 0; l < LineText.char_points[this.character]["data"][j].length; l++)
         {
-            var line_geo = new THREE.Geometry();
-            line_geo.base_geo = letter_object["data"][j]; // add original geo as an attr to allow jittering
-
-            for (var l = 0; l < letter_object["data"][j].length; l++)
-            {
-                var vert = letter_object["data"][j][l];
-                line_geo.vertices.push(new THREE.Vector3(vert[0], vert[1], 0));
-            }
-
-            var letter_mat = new THREE.LineBasicMaterial({
-                color: color,
-                linewidth: 1,
-                linejoin: "mitre"
-            });
-
-            letter_mat.visible = false;
-
-            var line = new THREE.Line(line_geo, letter_mat);
-            line.position.x = this.cursor;
-            this.scene_object.add(line);
-            this.line_geos.push(line);
+            var vert = LineText.char_points[this.character]["data"][j][l];
+            line_geo.vertices.push(new THREE.Vector3(vert[0], vert[1], 0));
         }
-        this.cursor += letter_object["bbox"][1];
+
+        this.material.visible = false;
+
+        var line = new THREE.Line(line_geo, this.material);
+        this.scene_object.add(line);
+        this.geometry.push(line);
     }
-};
+}
 
 
-// ----------------------------------------------------------------------------------------------------
-// Text update method 
-// ----------------------------------------------------------------------------------------------------
-
-JitterText.Text.prototype.update = function (tick) 
+LineText.Character.prototype.update = function (tick)
 {
     if (this.visible)
     {
@@ -223,8 +205,8 @@ JitterText.Text.prototype.update = function (tick)
 
                 for (var v = 0; v < child.geometry.base_geo.length; v++) // itterate over verts
                 {
-                    child.geometry.vertices[v].x = child.geometry.base_geo[v][0] + (Math.random() * this.jitter_scale);
-                    child.geometry.vertices[v].y = child.geometry.base_geo[v][1] + (Math.random() * this.jitter_scale);
+                    child.geometry.vertices[v].x = child.geometry.base_geo[v][0] + (Math.random() * (0.05 * this.jitter_mult));
+                    child.geometry.vertices[v].y = child.geometry.base_geo[v][1] + (Math.random() * (0.05 * this.jitter_mult));
                 }
                 child.geometry.verticesNeedUpdate = true;
             }
@@ -233,24 +215,102 @@ JitterText.Text.prototype.update = function (tick)
         } else {
             this.jitter_phase += 1;
         }
-        this.show_cycle();
     }
-};
+}
 
-JitterText.Text.prototype.show_cycle = function ()
+
+LineText.Character.prototype.show = function()
 {
-    if (this.visibility_phase_state == this.show_speed)
+    this.material.visible = true;
+    this.visible = true;
+}
+
+
+// ----------------------------------------------------------------------------------------------------
+// Bufer
+// ----------------------------------------------------------------------------------------------------
+
+LineText.Buffer = function (){
+    this.chars = [];
+    this.scene_object = new THREE.Object3D();
+    this.busy = false;
+    this.init()
+}
+
+
+LineText.Buffer.prototype.init = function ()
+{
+    for (var i = 0; i < this.chars.length; i++)
     {
-        for (var i = 0; i < this.line_geos.length; i++)
+        this.scene_object.remove(this.chars[i].scene_object);
+    }
+    this.chars = [];
+
+    // set default state
+    this.line_height = 1.3;
+    this.kerning = 0.2;
+    this.cursor = [0,1];
+    this.sing = false;
+
+    this.scene_object.position.z = 578;
+    this.scene_object.position.x = -8.5;
+}
+
+
+LineText.Buffer.prototype.append = function(text, args)
+{
+    this.busy = true;
+    // create new char objects
+    var safe_text = text.toUpperCase()
+
+    for (var i = 0; i < safe_text.length; i++)
+    {
+        var character = safe_text.charAt(i);
+        if (character == '\n'){ 
+            this.cursor[0] = 0;
+            this.cursor[1] -= this.line_height;
+        } else {
+            var character_object = new LineText.Character(safe_text.charAt(i), args);
+            character_object.scene_object.position.x = this.cursor[0];
+            character_object.scene_object.position.y = this.cursor[1];
+            this.cursor[0] += character_object.width + this.kerning;
+            this.scene_object.add(character_object.scene_object);
+            this.chars.push(character_object);
+        }
+    }
+}
+
+
+LineText.Buffer.prototype.update = function(tick)
+{
+    // show the latest char
+    if (this.chars.length > 0)
+    {
+        if (this.chars[this.chars.length -1].visible == false)
         {
-            if (this.line_geos[i].material.visible == false)
-            {
-                this.line_geos[i].material.visible = true;
-                this.visibility_phase_state = 0;
-                return; 
-            }
-        } 
-    } else {
-        this.visibility_phase_state ++;
+            this.visibilityCycle();
+        } else {
+            this.busy = false;
+        }
+
+        // update children 
+        for (var i = 0; i < this.chars.length; i++)
+        {
+            this.chars[i].update(tick);
+        }
+    }
+}
+
+
+LineText.Buffer.prototype.visibilityCycle = function ()
+{
+    for (var i = 0; i < this.chars.length; i++)
+    {
+        // console.log(i)
+        if (this.chars[i].visible == false)
+        {
+            this.chars[i].show();
+            return;
+        }
     }
 }

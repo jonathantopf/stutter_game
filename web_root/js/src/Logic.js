@@ -5,7 +5,7 @@ var Logic = {};
 Logic.singer;
 Logic.light_rig;
 Logic.loaiding_indicator;
-Logic.text_canvas;
+Logic.text_buffer;
 
 
 // ----------------------------------------------------------------------------------------------------
@@ -20,12 +20,12 @@ Logic.init = function ()
         new Commands.Wait           ('loading', Logic.loaiding_indicator),
         new Commands.Lights         (null,      Logic.light_rig.lights['key'], {value : 1, speed : 0.01}),
         new Commands.Sleep          (null,      1),
-        new Commands.Speak          (null,      'Hello world!', Logic.text_canvas),
-        new Commands.Sleep          (null,      3),
-        new Commands.ClearCanvas    (null,      Logic.text_canvas),
-        new Commands.Speak          (null,      'Goodbye now', Logic.text_canvas),
+        new Commands.Speak          (null,      'H... H... Hi!\ncould you give me \na hand?\n', Logic.text_buffer),
         new Commands.Sleep          (null,      2),
-        new Commands.ClearCanvas    (null,      Logic.text_canvas),
+        new Commands.ClearBuffer    (null,      Logic.text_buffer),
+        new Commands.Speak          (null,      'I\'m going shopping b... but \nits kinda hard with this\ns...s...s...', Logic.text_buffer),
+        new Commands.Speak          (null,      'stutter', Logic.text_buffer),
+        new Commands.Sleep          (null,      6),
         new Commands.Lights         (null,      Logic.light_rig.lights['key'], {value : 0, speed : 0.02}),
         new Commands.End            ('end')
     ]

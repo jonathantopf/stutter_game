@@ -91,48 +91,47 @@ Commands.Lights.prototype.update = function ()
 // Speak
 // ----------------------------------------------------------------------------------------------------
 
-Commands.Speak = function (tag, text, canvas, args) // args { value, speed }
+Commands.Speak = function (tag, text, buffer, args) // args { value, speed }
 {
     Commands.BaseCommand.call(this, tag);
     this.text = text;
     this.args = args;  
-    this.canvas = canvas;
+    this.buffer = buffer;
 }
 
 Commands.Speak.prototype = Object.create(Commands.BaseCommand)
 Commands.Speak.prototype.constructor = Commands.Speak;
 
 Commands.Speak.prototype.update = function ()
-{
+{    
     if (this.cycle == 0)
     {
-        this.canvas.appendText(this.text, this.args);
+        this.buffer.append(this.text, this.args);
     }
-    if (this.canvas.busy = true){
+    if (this.buffer.busy == false){
         this.completed = true;
     }
 }  
 
 
 // ----------------------------------------------------------------------------------------------------
-// ClearCanvas
+// ClearBuffer
 // ----------------------------------------------------------------------------------------------------
 
-Commands.ClearCanvas = function (tag, canvas) // args { value, speed }
+Commands.ClearBuffer = function (tag, buffer) // args { value, speed }
 {
     Commands.BaseCommand.call(this, tag);
-    this.canvas = canvas;
+    this.buffer = buffer;
 }
 
-Commands.ClearCanvas.prototype = Object.create(Commands.BaseCommand)
-Commands.ClearCanvas.prototype.constructor = Commands.ClearCanvas;
+Commands.ClearBuffer.prototype = Object.create(Commands.BaseCommand)
+Commands.ClearBuffer.prototype.constructor = Commands.ClearBuffer;
 
-Commands.ClearCanvas.prototype.update = function ()
-{
-    this.canvas.clear();
+Commands.ClearBuffer.prototype.update = function ()
+{    
+    this.buffer.init()
     this.completed = true;
 }  
-
 
 
 // ----------------------------------------------------------------------------------------------------

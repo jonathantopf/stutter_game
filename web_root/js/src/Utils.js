@@ -41,3 +41,22 @@ Utils.loadObjs = function(obj_url_array, all_loaded_callback)
         }(i, dummy_this) // clever hack to let you use i to call callbacks inside a for loop
     }
 }
+
+
+// ----------------------------------------------------------------------------------------------------
+// namedArgs - takes a dict of args and transfers them to an argument 
+// ----------------------------------------------------------------------------------------------------
+
+Utils.namedArgs = function (object, args)
+{
+    if (args != undefined)
+    {
+        var args_keys = Object.keys(args);
+        for (var i = 0; i < args_keys.length; i++)
+        {
+            object[args_keys[i]] = args[args_keys[i]];
+        }
+    }
+}
+
+

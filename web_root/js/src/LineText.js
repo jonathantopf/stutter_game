@@ -256,7 +256,8 @@ LineText.Buffer.prototype.init = function ()
     // set default state
     this.line_height = 1.3;
     this.kerning = 0.15;
-    this.cursor = [0,1];
+    this.cursor = [0,-1];
+    this.height = 1;
     this.sing = false;
 
     this.scene_object.position.z = 578;
@@ -276,6 +277,9 @@ LineText.Buffer.prototype.append = function(text, args)
         if (character == '\n'){ 
             this.cursor[0] = 0;
             this.cursor[1] -= this.line_height;
+            this.height += this.line_height;
+            this.scene_object.position.y = this.height / 2;
+
         } else {
             var character_object = new LineText.Character(safe_text.charAt(i), args);
             character_object.scene_object.position.x = this.cursor[0];

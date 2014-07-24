@@ -23,8 +23,6 @@ Logic.init = function ()
         new Commands.Speak          (null,      'Hello world!', Logic.text_canvas),
         new Commands.Sleep          (null,      3),
         new Commands.ClearCanvas    (null,      Logic.text_canvas),
-        new Commands.Speak          (null,      'Jonny', Logic.text_canvas),
-        new Commands.ClearCanvas    (null,      Logic.text_canvas),
         new Commands.Speak          (null,      'Goodbye now', Logic.text_canvas),
         new Commands.Sleep          (null,      2),
         new Commands.ClearCanvas    (null,      Logic.text_canvas),
@@ -45,8 +43,6 @@ Logic.init = function ()
     Logic.current_step = Logic.script[0];
     console.log('Initialised at step : ' + Logic.current_step.tag);
 }
-
-
 
 
 // ----------------------------------------------------------------------------------------------------

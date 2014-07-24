@@ -213,28 +213,25 @@ JitterText.Text.prototype.update = function (tick)
 {
     if (this.visible)
     {
-        for (var i = 0; i < this.scene_object.children.length; i++)
+        // jitter
+        if (this.jitter_phase == 0)
         {
-            var child = this.scene_object.children[i];
-            // jitter
-            if (this.jitter_phase == 0)
+            this.jitter_phase += 1;
+            for (var i = 0; i < this.scene_object.children.length; i++) // innerate over scene_object children
             {
-                for (var v = 0; v < child.geometry.base_geo.length; v++) // itterate over letters
+                var child = this.scene_object.children[i];
+
+                for (var v = 0; v < child.geometry.base_geo.length; v++) // itterate over verts
                 {
                     child.geometry.vertices[v].x = child.geometry.base_geo[v][0] + (Math.random() * this.jitter_scale);
                     child.geometry.vertices[v].y = child.geometry.base_geo[v][1] + (Math.random() * this.jitter_scale);
                 }
-
                 child.geometry.verticesNeedUpdate = true;
-
-                this.jitter_phase += 1;
-
-            } else if (this.jitter_phase == this.jitter_freq) {
-                this.jitter_phase = 0;
-            } else {
-                this.jitter_phase += 1;
             }
-
+        } else if (this.jitter_phase == this.jitter_freq) {
+            this.jitter_phase = 0;
+        } else {
+            this.jitter_phase += 1;
         }
         this.show_cycle();
     }

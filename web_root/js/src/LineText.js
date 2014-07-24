@@ -154,7 +154,8 @@ LineText.Character = function (character, args)
     this.color = 0xffffff;
     this.cycle_color = false;
     this.sparkle = false;
-    this.visible = false; 
+    this.num_sparkles = 2;
+    this.visible = false;
 
     Utils.namedArgs(this, args);   
     
@@ -170,24 +171,43 @@ LineText.Character = function (character, args)
         linejoin: "mitre"
     });
 
-    this.geometry = [];
+    this.material.visible = false;
+
+    this.letter_object = new THREE.Object3D();
+    this.scene_object.add(this.letter_object);
+    this.letter_geo = [];
 
     for (var j = 0; j < LineText.char_points[this.character]["data"].length; j++)
     {
         var line_geo = new THREE.Geometry();
         line_geo.base_geo = LineText.char_points[this.character]["data"][j]; // add original geo as an attr to allow jittering
 
-        for (var l = 0; l < LineText.char_points[this.character]["data"][j].length; l++)
+        for (var l = 0; l < line_geo.base_geo.length; l++)
         {
-            var vert = LineText.char_points[this.character]["data"][j][l];
+            var vert = line_geo.base_geo[l];
             line_geo.vertices.push(new THREE.Vector3(vert[0], vert[1], 0));
         }
 
-        this.material.visible = false;
-
         var line = new THREE.Line(line_geo, this.material);
-        this.scene_object.add(line);
-        this.geometry.push(line);
+        this.letter_object.add(line);
+        this.letter_geo.push(line);
+    }
+
+    if (this.sparkle)
+    {
+        this.sparkle_object = new THREE.Object3D();
+        this.scene_object.add(this.sparkle_object);
+        this.sparkle_geo = [];
+
+        for (var i = 0; i < this.num_sparkles; i++)
+        {
+            var sparkle_geo = new THREE.Geometry();
+            sparkle_geo.vertices.push(new THREE.Vector3(0,0,0));
+            sparkle_geo.vertices.push(new THREE.Vector3(0,0,0));
+            var line = new THREE.Line(sparkle_geo, this.material);
+            this.sparkle_object.add(line);
+            this.sparkle_geo.push(line);
+        }
     }
 }
 
@@ -196,14 +216,13 @@ LineText.Character.prototype.update = function (tick)
 {
     if (this.visible)
     {
-        // jitter
+        // jitter letters
         if (this.jitter_phase == 0)
         {
             this.jitter_phase += 1;
-            for (var i = 0; i < this.scene_object.children.length; i++) // innerate over scene_object children
+            for (var i = 0; i < this.letter_object.children.length; i++) // innerate over letter_object children
             {
-                var child = this.scene_object.children[i];
-
+                var child = this.letter_object.children[i];
                 for (var v = 0; v < child.geometry.base_geo.length; v++) // itterate over verts
                 {
                     child.geometry.vertices[v].x = child.geometry.base_geo[v][0] + (Math.random() * (0.04 * this.jitter_mult));
@@ -215,6 +234,20 @@ LineText.Character.prototype.update = function (tick)
             this.jitter_phase = 0;
         } else {
             this.jitter_phase += 1;
+        }
+
+        // jitter_sparkles
+        if (this.sparkle)
+        {
+            for (var i = 0; i < this.num_sparkles; i++)
+            {
+                point_1 = [Math.random(), Math.random()];
+                this.sparkle_geo[i].geometry.vertices[0].x = point_1[0];
+                this.sparkle_geo[i].geometry.vertices[0].y = point_1[1];
+                this.sparkle_geo[i].geometry.vertices[1].x = point_1[0] + Math.random() * 0.05;
+                this.sparkle_geo[i].geometry.vertices[1].y = point_1[1] + Math.random() * 0.05;
+                this.sparkle_geo[i].geometry.verticesNeedUpdate = true;
+            }
         }
 
         // cycle colors

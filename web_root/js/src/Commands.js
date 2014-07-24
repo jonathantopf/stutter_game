@@ -6,11 +6,12 @@ var Commands = {};
 // BaseClass
 // ----------------------------------------------------------------------------------------------------
 
-Commands.BaseCommand = function ()
+Commands.BaseCommand = function (tag)
 {
     this.completed = false;
-    this.next = null;
-    this.command_name = null;
+    this.tag = tag;
+    this.current_key = null;
+    this.next_key = null;
     this.cycle = 0;
 }
 
@@ -25,9 +26,9 @@ Commands.BaseCommand.updateWrapper = function (tick)
 // Wait
 // ----------------------------------------------------------------------------------------------------
 
-Commands.Wait = function (wait_object) 
+Commands.Wait = function (tag, wait_object) 
 {
-    Commands.BaseCommand.call(this, arguments);
+    Commands.BaseCommand.call(this, tag);
     this.wait_object = wait_object;
 }
 
@@ -44,9 +45,9 @@ Commands.Wait.prototype.update = function ()
 // Sleep
 // ----------------------------------------------------------------------------------------------------
 
-Commands.Sleep = function (time) 
+Commands.Sleep = function (tag, time) 
 {
-    Commands.BaseCommand.call(this, arguments);
+    Commands.BaseCommand.call(this, tag);
     this.timer = time;
 }
 
@@ -68,9 +69,9 @@ Commands.Sleep.prototype.update = function ()
 // Lights
 // ----------------------------------------------------------------------------------------------------
 
-Commands.Lights = function (light, args) // args { value, speed }
+Commands.Lights = function (tag, light, args) // args { value, speed }
 {
-    Commands.BaseCommand.call(this, arguments);
+    Commands.BaseCommand.call(this, tag);
     this.light = light;
     this.args = args;   
 }
@@ -90,9 +91,9 @@ Commands.Lights.prototype.update = function ()
 // Speak
 // ----------------------------------------------------------------------------------------------------
 
-Commands.Speak = function (text, canvas, args) // args { value, speed }
+Commands.Speak = function (tag, text, canvas, args) // args { value, speed }
 {
-    Commands.BaseCommand.call(this, arguments);
+    Commands.BaseCommand.call(this, tag);
     this.text = text;
     this.args = args;  
     this.canvas = canvas;
@@ -117,9 +118,9 @@ Commands.Speak.prototype.update = function ()
 // ClearCanvas
 // ----------------------------------------------------------------------------------------------------
 
-Commands.ClearCanvas = function (canvas) // args { value, speed }
+Commands.ClearCanvas = function (tag, canvas) // args { value, speed }
 {
-    Commands.BaseCommand.call(this, arguments);
+    Commands.BaseCommand.call(this, tag);
     this.canvas = canvas;
 }
 
@@ -138,9 +139,9 @@ Commands.ClearCanvas.prototype.update = function ()
 // End
 // ----------------------------------------------------------------------------------------------------
 
-Commands.End = function () // args { value, speed }
+Commands.End = function (tag) // args { value, speed }
 {
-    Commands.BaseCommand.call(this, arguments); 
+    Commands.BaseCommand.call(this, tag); 
 }
 
 Commands.End.prototype = Object.create(Commands.BaseCommand)

@@ -15,33 +15,38 @@ Logic.text_canvas;
 Logic.init = function ()
 {
     Logic.script = 
-    {
-        'loading'     : new Commands.Wait(Logic.loaiding_indicator),
-        'lights_up'   : new Commands.Lights(Logic.light_rig.lights['key'], {value : 1, speed : 0.01}),
-        'pause'       : new Commands.Sleep(1),
-        'hello'       : new Commands.Speak('Hello there!', Logic.text_canvas),
-        'test'        : new Commands.Sleep(3),
-        'numm'        : new Commands.ClearCanvas(Logic.text_canvas),
-        'lights_down' : new Commands.Lights(Logic.light_rig.lights['key'], {value : 0, speed : 0.01}),
-        'end'         : new Commands.End()
-    }
+    [
+        //  command type             tag        args
+        new Commands.Wait           ('loading', Logic.loaiding_indicator),
+        new Commands.Lights         (null,      Logic.light_rig.lights['key'], {value : 1, speed : 0.01}),
+        new Commands.Sleep          (null,      1),
+        new Commands.Speak          (null,      'Hello world!', Logic.text_canvas),
+        new Commands.Sleep          (null,      3),
+        new Commands.ClearCanvas    (null,      Logic.text_canvas),
+        new Commands.Speak          (null,      'Jonny', Logic.text_canvas),
+        new Commands.ClearCanvas    (null,      Logic.text_canvas),
+        new Commands.Speak          (null,      'Goodbye now', Logic.text_canvas),
+        new Commands.Sleep          (null,      2),
+        new Commands.ClearCanvas    (null,      Logic.text_canvas),
+        new Commands.Lights         (null,      Logic.light_rig.lights['key'], {value : 0, speed : 0.02}),
+        new Commands.End            ('end')
+    ]
 
     // add a next attr to all entries
-    Logic.script_keys = Object.keys(Logic.script);
-
-    for (var i = 0; i < Logic.script_keys.length - 1; i ++)
+    for (var i = 0; i < Logic.script.length - 1; i ++)
     {
-        if (Logic.script[Logic.script_keys[i]].next == null)
+        if (Logic.script[i].next_key == null)
         {
-            Logic.script[Logic.script_keys[i]].next = Logic.script_keys[i + 1];
-            Logic.script[Logic.script_keys[i]].command_name = Logic.script_keys[i];
+            Logic.script[i].next_key = i + 1;
         }
     } 
 
     // initialise first step of game
-    Logic.current_step = Logic.script['loading'];
-    console.log('Initialised at step : ' + Logic.current_step.command_name);
+    Logic.current_step = Logic.script[0];
+    console.log('Initialised at step : ' + Logic.current_step.tag);
 }
+
+
 
 
 // ----------------------------------------------------------------------------------------------------
@@ -53,8 +58,11 @@ Logic.update = function (tick)
     if (Logic.current_step.completed == true)   
     {
         Logic.current_step.completed = false;
-        Logic.current_step = Logic.script[Logic.current_step.next];
-        console.log('Current_step : ' + Logic.current_step.command_name);
+        Logic.current_step = Logic.script[Logic.current_step.next_key];
+        if (Logic.current_step.tag != null)
+        {
+            console.log('Current_step : ' + Logic.current_step.tag);
+        }
     }
     Logic.current_step.updateWrapper(tick);
 }

@@ -149,13 +149,14 @@ LineText.Character = function (character, args)
     this.character = character;
 
     this.width = LineText.char_points[this.character]["bbox"][1];
-
     this.jitter_freq = 3;
     this.jitter_mult = 1;
     this.color = 0xffffff;
     this.cycle_color = false;
     this.sparkle = false;
-    this.visible = false;    
+    this.visible = false; 
+
+    Utils.namedArgs(this, args);   
     
     // state
     this.jitter_phase = 0;
@@ -205,8 +206,8 @@ LineText.Character.prototype.update = function (tick)
 
                 for (var v = 0; v < child.geometry.base_geo.length; v++) // itterate over verts
                 {
-                    child.geometry.vertices[v].x = child.geometry.base_geo[v][0] + (Math.random() * (0.05 * this.jitter_mult));
-                    child.geometry.vertices[v].y = child.geometry.base_geo[v][1] + (Math.random() * (0.05 * this.jitter_mult));
+                    child.geometry.vertices[v].x = child.geometry.base_geo[v][0] + (Math.random() * (0.04 * this.jitter_mult));
+                    child.geometry.vertices[v].y = child.geometry.base_geo[v][1] + (Math.random() * (0.04 * this.jitter_mult));
                 }
                 child.geometry.verticesNeedUpdate = true;
             }
@@ -214,6 +215,12 @@ LineText.Character.prototype.update = function (tick)
             this.jitter_phase = 0;
         } else {
             this.jitter_phase += 1;
+        }
+
+        // cycle colors
+        if (this.cycle_color)
+        {
+            this.material.color.offsetHSL(0.05, 0, 0);
         }
     }
 }
@@ -248,7 +255,7 @@ LineText.Buffer.prototype.init = function ()
 
     // set default state
     this.line_height = 1.3;
-    this.kerning = 0.2;
+    this.kerning = 0.15;
     this.cursor = [0,1];
     this.sing = false;
 
@@ -314,3 +321,5 @@ LineText.Buffer.prototype.visibilityCycle = function ()
         }
     }
 }
+
+

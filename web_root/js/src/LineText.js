@@ -180,11 +180,19 @@ LineText.Character = function (character, args)
     this.scene_object.add(this.letter_object);
     this.letter_geo = [];
 
+    var char_data = LineText.char_points[this.character]["data"].slice(0);
+
+    // key outline
+    if (this.key_outline)
+    {
+        char_data.push(LineText.key_outline);
+    }
+
     // letter geo
-    for (var j = 0; j < LineText.char_points[this.character]["data"].length; j++)
+    for (var j = 0; j < char_data.length; j++)
     {
         var line_geo = new THREE.Geometry();
-        line_geo.base_geo = LineText.char_points[this.character]["data"][j]; // add original geo as an attr to allow jittering
+        line_geo.base_geo = char_data[j]; // add original geo as an attr to allow jittering
 
         for (var l = 0; l < line_geo.base_geo.length; l++)
         {
@@ -196,8 +204,6 @@ LineText.Character = function (character, args)
         this.letter_object.add(line);
         this.letter_geo.push(line);
     }
-
-    // outline geo
 
     // sparkle geo
     if (this.sparkle)

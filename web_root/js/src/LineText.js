@@ -281,6 +281,12 @@ LineText.Character.prototype.show = function()
     this.visible = true;
 }
 
+LineText.Character.prototype.hide = function()
+{
+    this.material.visible = false;
+    this.visible = false;
+}
+
 
 // ----------------------------------------------------------------------------------------------------
 // Bufer

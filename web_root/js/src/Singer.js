@@ -21,14 +21,16 @@ Singer.Character = function ()
 
     this.mouth_shapes = {};
 
+    this.talking_keys = ['ooo', 'aaa', 'mmm', 'eee'];
+
     this.scene_object    = new THREE.Object3D();
     this.character_root  = new THREE.Object3D();
-    this.notes_root      = new THREE.Object3D();
+    this.speech_bubbles_root = new THREE.Object3D();
     this.character_head  = new THREE.Object3D();
     this.character_eyes  = new THREE.Object3D();
     this.character_mouth = new THREE.Object3D();
     this.scene_object.add(this.character_root);
-    this.scene_object.add(this.notes_root);
+    this.scene_object.add(this.speech_bubbles_root);
     this.character_root.add(this.character_head);
     this.character_head.add(this.character_eyes);
     this.character_head.add(this.character_mouth);
@@ -41,14 +43,34 @@ Singer.Character = function ()
     this.character_head.lookAt(new THREE.Vector3(this.gaze_point[0], this.gaze_point[1], this.gaze_point[2]));
 
     // notes
-    this.notes = [];
-    this.note_phase = 0
+    // this.notes = [];
+    // this.note_phase = 0
 
-    for (var i = 0; i < 10; i++)
+    // for (var i = 0; i < 10; i++)
+    // {
+    //     var note = new Singer.Note();
+    //     this.notes.push(note);
+    //     this.speech_bubbles_root.add(note.scene_object);
+    // }
+
+    // demo keys
+    this.demo_objects = {
+        'A' : new Singer.DemoBubble('A'),
+        'B' : new Singer.DemoBubble('B'),
+        'D' : new Singer.DemoBubble('D'),
+        'F' : new Singer.DemoBubble('F'),
+        'G' : new Singer.DemoBubble('G'),
+        'H' : new Singer.DemoBubble('H'),
+        'J' : new Singer.DemoBubble('J'),
+        'K' : new Singer.DemoBubble('K'),
+        'L' : new Singer.DemoBubble('L')
+    }
+
+    this.demo_objects_keys = Object.keys(this.demo_objects);
+
+    for (var i = 0; i < this.demo_objects_keys.length; i++)
     {
-        var note = new Singer.Note();
-        this.notes.push(note);
-        this.notes_root.add(note.scene_object);
+        this.speech_bubbles_root.add(this.demo_objects[this.demo_objects_keys[i]].scene_object);
     }
 
     // position objects
@@ -58,7 +80,7 @@ Singer.Character = function ()
 
     this.character_eyes.position.y = 60;
 
-    this.notes_root.position.x = 60;
+    this.speech_bubbles_root.position.x = 60;
 
     // character state
     this.blinking = 1; // 0=closed, 1=open
@@ -78,6 +100,8 @@ Singer.Character.prototype.load = function (on_load_callback)
         'obj/smile.obj',
         'obj/ooo.obj',
         'obj/aaa.obj',
+        'obj/mmm.obj',
+        'obj/eee.obj',
     ];
 
     // on load
@@ -93,7 +117,8 @@ Singer.Character.prototype.load = function (on_load_callback)
         dummy_this.mouth_shapes['smile'] = obj_list[3].geometry.vertices;
         dummy_this.mouth_shapes['ooo'] = obj_list[4].geometry.vertices;
         dummy_this.mouth_shapes['aaa'] = obj_list[5].geometry.vertices;
-
+        dummy_this.mouth_shapes['mmm'] = obj_list[6].geometry.vertices;
+        dummy_this.mouth_shapes['eee'] = obj_list[7].geometry.vertices;
 
         dummy_this.character_root.add(dummy_this.body);
         dummy_this.character_eyes.add(dummy_this.eyes);
@@ -117,13 +142,9 @@ Singer.Character.prototype.load = function (on_load_callback)
 
 Singer.Character.prototype.setup = function () 
 {
-
     this.material_black.color = 0x000000;
-
     this.mouth.material = this.material_black;
-
     this.eyes.material = this.material_black;
-
 };
 
 
@@ -131,8 +152,12 @@ Singer.Character.prototype.setup = function ()
 // sing/talk 
 // ----------------------------------------------------------------------------------------------------
 
-Singer.Character.prototype.sing = function(shape)
+Singer.Character.prototype.sing = function (shape)
 {
+    if (shape == undefined)
+    { 
+        shape = this.randomMouthShape() 
+    }
     this.mouth.geometry.vertices = this.mouth_shapes[shape];
     this.mouth.geometry.verticesNeedUpdate = true;
 
@@ -142,12 +167,31 @@ Singer.Character.prototype.sing = function(shape)
 }
 
 
-Singer.Character.prototype.talk = function(shape)
+Singer.Character.prototype.talk = function (shape)
 {
+    if (shape == undefined) 
+    { 
+        shape = this.randomMouthShape() 
+    }
     this.mouth.geometry.vertices = this.mouth_shapes[shape];
     this.mouth.geometry.verticesNeedUpdate = true;
 }
 
+
+Singer.Character.prototype.randomMouthShape = function()
+{
+    return this.talking_keys[Math.floor(Math.random()*this.talking_keys.length)];
+}
+
+
+// ----------------------------------------------------------------------------------------------------
+// demo
+// ----------------------------------------------------------------------------------------------------
+
+Singer.Character.prototype.demoKey = function (key)
+{
+    this.demo_objects[key].reset();
+}
 
 // ----------------------------------------------------------------------------------------------------
 // update method 
@@ -178,93 +222,56 @@ Singer.Character.prototype.update = function (tick)
     }
 
     // head rotation
-
     this.gaze_point = [((this.gaze_point[0] * 5) + this.gaze_target[0]) / 6,
                        ((this.gaze_point[1] * 5) + this.gaze_target[1]) / 6,
                        ((this.gaze_point[2] * 5) + this.gaze_target[2]) / 6]
 
     this.character_head.lookAt(new THREE.Vector3(this.gaze_point[0], this.gaze_point[1], this.gaze_point[2]))
 
-    // notes
+    // // notes
 
-    for (var i = 0; i < this.notes.length; i++)
+    // for (var i = 0; i < this.notes.length; i++)
+    // {
+    //     this.notes[i].update();
+    // }
+
+    for (var i = 0; i < this.demo_objects_keys.length; i++)
     {
-        this.notes[i].update();
+        var key = this.demo_objects_keys[i];
+        this.demo_objects[key].updateWrapper();
     }
 
 };
 
 
 // ----------------------------------------------------------------------------------------------------
-// Note class
+// SpeachBubble
 // ----------------------------------------------------------------------------------------------------
+// class for notes and demo keys do derive from
 
-// notes generated from man_model.ma using following python code:
-// import maya.cmds as cmds
-// import json
-// for item in cmds.ls(sl=True):
-//     print json.dumps(cmds.getAttr(item + '.cv[*]'))
-
-Singer.notes_points = 
-[
-    [[-4.616093500404645, -4.331184838401498, 1.0249786576085652e-15], [-7.434796197976084, -1.0788355719728528, 1.6508563844919353e-15], [-9.60302904226188, -3.6807149851157703, 2.132300789786852e-15], [-7.651619482404698, -6.499417682687271, 1.6990008250214346e-15], [-4.616093500404645, -4.331184838401498, 1.0249786576085652e-15], [-6.133856491404686, 14.098794338027513, 1.361989741315003e-15], [4.92413101445274, 19.30255316431337, -1.0933767256890414e-15], [6.875540574309923, -0.4283657186871075, -1.5266766904544588e-15], [3.623191307881285, 1.3062205567415006, -8.045100825120966e-16], [3.1895447390241145, -2.5965985629728863, -7.082212014531108e-16], [5.357777583309911, -4.11436155397292, -1.1896656067480273e-15], [6.875540574309923, -0.4283657186871075, -1.5266766904544588e-15]],
-    [[-1.230626023112933, 12.339446224707748, 2.7325386912678447e-16], [2.075929161775548, 10.604859949279136, -4.609488705645921e-16], [2.9576772110791296, 14.941325637850673, -6.567362678156229e-16], [0.3124330631683563, 17.543205050993592, -6.937407606252416e-17], [-1.682341231456661, 13.206739362422057, 3.735547941020958e-16], [-0.17541942414860046, -7.608295942721311, 3.895093674546334e-17], [-4.992510144242459, -1.1035974098640118, 1.1085599425767388e-15]],
-    [[6.676386672190972, 14.458487072842068, -1.482455640939178e-15], [0.4034124508219463, 19.526619871465122, -8.957555825038683e-17], [-0.11294815892634347, -2.5200253422930032, 2.5079529340020438e-17], [-1.847534434354941, -6.206021177578812, 4.102350535759449e-16], [-5.301805958152414, -5.899791730791907, 1.1772374093813408e-15], [-5.53353026964075, -2.4604212340541167, 1.2286905425772931e-15], [-2.9316508564978108, -1.1594815274826544, 6.509572562233969e-16], [-0.11294815892634347, -2.5200253422930032, 2.5079529340020438e-17]],
-    [[2.3527091142622965, 14.789884447577741, -5.224063657656811e-16], [1.0286594750384666, -3.218315618803267, -2.2840828672309557e-16], [-0.7059268003901309, -6.904311454089061, 1.567472375128289e-16], [-4.160198324187604, -6.59808200730216, 9.237495933182248e-16], [-4.391922635675911, -3.1587115105643733, 9.752027265141708e-16], [-1.7900432225330007, -1.8577718039928968, 3.974694401602809e-16], [1.0286594750384666, -3.218315618803267, -2.2840828672309557e-16]],
-    [[4.953262430266477, 11.229742361301277, -1.0998451994043094e-15], [-0.6501208847354576, 19.63481733380413, 1.4435583501880736e-16], [1.1097071207871636, -2.390827481340363, -2.464044792034689e-16], [-0.49125954064194843, -5.792881636877244, 1.0908153063170466e-16], [-3.493072030821537, -4.39203580812676, 7.756177990726558e-16], [-3.8933136961788364, -1.5903441506258034, 8.644893015314539e-16], [-1.4918637040351541, -0.38961915455396934, 3.3126028677869047e-16], [1.1097071207871636, -2.390827481340363, -2.464044792034689e-16]]
-
-]
-
-
-// ----------------------------------------------------------------------------------------------------
-// Note constructor
-// ----------------------------------------------------------------------------------------------------
-
-Singer.Note = function () 
-{
-    // build geo
-    this.material = new THREE.LineBasicMaterial
-    ({
-        color: 0xfffffff,
-        linewidth: 1,
-        linejoin: "mitre"
-    });
-
-    this.material.visible = false;
-
-    this.geometry = new THREE.Geometry();
-    this.line_points = Singer.notes_points[Math.floor(Math.random()*Singer.notes_points.length)];
-
-    for (var i = 0; i < this.line_points.length; i++)
-    {
-        this.geometry.vertices.push(new THREE.Vector3(this.line_points[i][0], this.line_points[i][1], this.line_points[i][2]))
-    }
-
-    this.scene_object = new THREE.Line(this.geometry, this.material);
-
+Singer.SpeachBubble = function ()
+{    
+    this.scene_object = new THREE.Object3D();
+    this.scene_object.position.y = 200; // set nice and far out of view to start
     this.velocity = [0,0,0];
     this.target_velocity = [0,0,0];
     this.accelaration_factor = 0.06;
 }
 
 
-// ----------------------------------------------------------------------------------------------------
-// Note reset method
-// ----------------------------------------------------------------------------------------------------
-
-Singer.Note.prototype.reset = function ()
+Singer.SpeachBubble.reset = function ()
 {
     this.velocity = 
     [
-        -2 - (Math.random() * 5),
-        (Math.random() - 0.5) * 2,
+        -2 - (Math.random() * 2),
+        (Math.random() - 0.5) * 1,
         0
     ];
 
     this.target_velocity = 
     [
         0,
-        2 + (Math.random() * 2),
+        2 + (Math.random() * 1),
         0
     ];
 
@@ -273,16 +280,10 @@ Singer.Note.prototype.reset = function ()
     this.scene_object.position.z = 0;
 
     this.scene_object.rotation.z += Utils.toRadians(Math.random() * -70);
-
-    this.material.visible = true;
 }
 
 
-// ----------------------------------------------------------------------------------------------------
-// Note update method
-// ----------------------------------------------------------------------------------------------------
-
-Singer.Note.prototype.update = function ()
+Singer.SpeachBubble.updateWrapper = function ()
 {
     // move
     for (var i = 0; i < 3; i++)
@@ -299,13 +300,30 @@ Singer.Note.prototype.update = function ()
         this.velocity[2]
     ));
 
-    // visibility
-    if (this.scene_object.position.y > 200)
-    {
-        this.material.visible = false;
-    }
+    this.update();
 }
 
+
+// ----------------------------------------------------------------------------------------------------
+// DemoBubble
+// ----------------------------------------------------------------------------------------------------
+
+Singer.DemoBubble = function (letter){
+    Singer.SpeachBubble.call(this);
+    this.char_object = new LineText.Character(letter, {color : 0xffdddd, cycle_color : true, sparkle : true, key_outline : true});
+    this.scene_object.scale.set(20,20,20);
+    this.scene_object.add(this.char_object.scene_object);
+    this.char_object.show();
+
+}
+
+Singer.DemoBubble.prototype = Object.create(Singer.SpeachBubble);
+Singer.DemoBubble.prototype.constructor = Singer.DemoBubble;
+
+Singer.DemoBubble.prototype.update = function () 
+{
+    this.char_object.update();
+}
 
 
 

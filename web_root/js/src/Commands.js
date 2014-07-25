@@ -91,12 +91,15 @@ Commands.Lights.prototype.update = function ()
 // Speak
 // ----------------------------------------------------------------------------------------------------
 
-Commands.Speak = function (tag, text, buffer, args)
+Commands.Speak = function (tag, text, buffer, singer, args)
 {
     Commands.BaseCommand.call(this, tag);
     this.text = text;
     this.args = args;  
     this.buffer = buffer;
+    this.singer = singer;
+    this.mouth_phase = 0;
+    this.mouth_freq = 3;
 }
 
 Commands.Speak.prototype = Object.create(Commands.BaseCommand)
@@ -108,8 +111,22 @@ Commands.Speak.prototype.update = function ()
     {
         this.buffer.append(this.text, this.args);
     }
+
+    if (this.mouth_phase == 0)
+    {
+        this.singer.talk();
+    }
+
+    this.mouth_phase ++;
+
+    if (this.mouth_phase == this.mouth_freq)
+    {
+        this.mouth_phase = 0;
+    }
+
     if (this.buffer.busy == false){
         this.completed = true;
+        this.singer.talk('smile');
     }
 }  
 
@@ -129,6 +146,16 @@ Commands.SongDemo = function (tag, song, singer, bpm)
     this.mesure = 0;
 
     this.song_step = 0;
+
+    this.key_mapping = {
+        'C' : 'A', 
+        'D' : 'B', 
+        'E' : 'D', 
+        'F' : 'F', 
+        'G' : 'G', 
+        'A' : 'H', 
+        'B' : 'J', 
+    };
 }
 
 Commands.SongDemo.prototype = Object.create(Commands.BaseCommand)
@@ -141,14 +168,25 @@ Commands.SongDemo.prototype.update = function ()
         this.mesure_phase = this.ticks_per_mesure;
         this.mesure ++; 
 
+        var singing = false
+
         for (var i = 0; i < Sound.scale.length; i ++)
         {
             if (this.song[this.mesure][i] == 1)
             {
                 Sound.synth[Sound.scale[i]].play();
+                this.singer.demoKey(this.key_mapping[Sound.scale[i]]);
+                singing = true;
             } else {
                 Sound.synth[Sound.scale[i]].pause();
             }
+        }
+
+        if (singing)
+        {
+            this.singer.talk('ooo');
+        } else {
+            this.singer.talk('smile');
         }
     }
 

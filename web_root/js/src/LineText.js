@@ -159,6 +159,7 @@ LineText.Character = function (character, args)
     this.num_sparkles = 2;
     this.key_outline = false;
     this.visible = false;
+    this.ofset_char = 0;
 
     Utils.namedArgs(this, args);   
     
@@ -186,6 +187,8 @@ LineText.Character = function (character, args)
     if (this.key_outline)
     {
         char_data.push(LineText.key_outline);
+        this.width = 1.5;
+        this.ofset_char = 0.5;
     }
 
     // letter geo
@@ -197,7 +200,7 @@ LineText.Character = function (character, args)
         for (var l = 0; l < line_geo.base_geo.length; l++)
         {
             var vert = line_geo.base_geo[l];
-            line_geo.vertices.push(new THREE.Vector3(vert[0], vert[1], 0));
+            line_geo.vertices.push(new THREE.Vector3(vert[0] + this.ofset_char, vert[1], 0));
         }
 
         var line = new THREE.Line(line_geo, this.material);

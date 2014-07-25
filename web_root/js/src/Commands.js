@@ -91,7 +91,7 @@ Commands.Lights.prototype.update = function ()
 // Speak
 // ----------------------------------------------------------------------------------------------------
 
-Commands.Speak = function (tag, text, buffer, args) // args { value, speed }
+Commands.Speak = function (tag, text, buffer, args)
 {
     Commands.BaseCommand.call(this, tag);
     this.text = text;
@@ -115,10 +115,58 @@ Commands.Speak.prototype.update = function ()
 
 
 // ----------------------------------------------------------------------------------------------------
+// SongDemo
+// ----------------------------------------------------------------------------------------------------
+
+Commands.SongDemo = function (tag, song, singer, bpm) 
+{
+    Commands.BaseCommand.call(this, tag);
+    this.song = song;
+    this.singer = singer;
+    this.ticks_per_mesure = Math.round(bpm / 16); // 16 mesures per bar
+
+    this.mesure_phase = 0;
+    this.mesure = 0;
+
+    this.song_step = 0;
+}
+
+Commands.SongDemo.prototype = Object.create(Commands.BaseCommand)
+Commands.SongDemo.prototype.constructor = Commands.SongDemo;
+
+Commands.SongDemo.prototype.update = function ()
+{    
+    if (this.mesure_phase == 0)
+    {
+        this.mesure_phase = this.ticks_per_mesure;
+        this.mesure ++; 
+
+        for (var i = 0; i < Sound.scale.length; i ++)
+        {
+            if (this.song[this.mesure][i] == 1)
+            {
+                Sound.synth[Sound.scale[i]].play();
+            } else {
+                Sound.synth[Sound.scale[i]].pause();
+            }
+        }
+    }
+
+    if (this.song.length == this.mesure + 1)
+    {
+        this.completed = true;
+    }
+
+    this.mesure_phase --;
+}  
+
+
+
+// ----------------------------------------------------------------------------------------------------
 // ClearBuffer
 // ----------------------------------------------------------------------------------------------------
 
-Commands.ClearBuffer = function (tag, buffer) // args { value, speed }
+Commands.ClearBuffer = function (tag, buffer)
 {
     Commands.BaseCommand.call(this, tag);
     this.buffer = buffer;
@@ -138,7 +186,7 @@ Commands.ClearBuffer.prototype.update = function ()
 // End
 // ----------------------------------------------------------------------------------------------------
 
-Commands.End = function (tag) // args { value, speed }
+Commands.End = function (tag)
 {
     Commands.BaseCommand.call(this, tag); 
 }

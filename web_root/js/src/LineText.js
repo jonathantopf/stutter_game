@@ -138,6 +138,8 @@ LineText.char_points =
         "data": [],
         "bbox": [1, 0.5, 0, 0]}
     }
+
+LineText.key_outline = [[-0.5179021055426402, 1.109176177049986, 0.0], [-0.5145144387695061, -0.14426052900962094, 0.0], [-0.3959461017098136, -0.27299186638871564, 0.0], [0.8303892701647206, -0.27299186638871586, 0.0], [0.9455699404512797, -0.1374851954633528, 0.0], [0.9320192733587426, 1.1057885102768517, 0.0], [0.8032879359796475, 1.2345198476559467, 0.0], [-0.37900776784414336, 1.2243568473365443, 0.0], [-0.5179021055426402, 1.109176177049986, 0.0]];
     
 
 // ----------------------------------------------------------------------------------------------------
@@ -155,6 +157,7 @@ LineText.Character = function (character, args)
     this.cycle_color = false;
     this.sparkle = false;
     this.num_sparkles = 2;
+    this.key_outline = false;
     this.visible = false;
 
     Utils.namedArgs(this, args);   
@@ -177,6 +180,7 @@ LineText.Character = function (character, args)
     this.scene_object.add(this.letter_object);
     this.letter_geo = [];
 
+    // letter geo
     for (var j = 0; j < LineText.char_points[this.character]["data"].length; j++)
     {
         var line_geo = new THREE.Geometry();
@@ -193,6 +197,9 @@ LineText.Character = function (character, args)
         this.letter_geo.push(line);
     }
 
+    // outline geo
+
+    // sparkle geo
     if (this.sparkle)
     {
         this.sparkle_object = new THREE.Object3D();

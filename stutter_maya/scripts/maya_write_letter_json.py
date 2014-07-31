@@ -18,6 +18,8 @@ replacements = {
     'quotes' : '"',
     'exclamation_mark' : '!',
     'question_mark' : '?',
+    'left_arrow' : '<',
+    'right_arrow' : '>'
 }
 
 letters_dict = {}

@@ -59,7 +59,17 @@ Logic.init = function ()
         {
             Logic.script[i].next_key = i + 1;
         }
-    } 
+    }
+
+    // key tag pairs
+    Logic.script_key_pairs = {};
+    for (var i = 0; i < Logic.script.length - 1; i ++)
+    {
+        if (Logic.script[i].tag  != null)
+        {
+            Logic.script_key_pairs[Logic.script[i].tag] = i;
+        }
+    }
 
     // initialise first step of game
     Logic.current_step = Logic.script[0];

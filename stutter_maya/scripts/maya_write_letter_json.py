@@ -2,24 +2,25 @@ import maya.cmds as cmds
 import json
 
 replacements = {
-    'num_1' : '1',
-    'num_2' : '2',
-    'num_3' : '3',
-    'num_4' : '4',
-    'num_5' : '5',
-    'num_6' : '6',
-    'num_7' : '7',
-    'num_8' : '8',
-    'num_9' : '9',
-    'num_0' : '0',
-    'apostraphie' : '\'',
-    'full_stop' : '.',
-    'comma' : ',',
-    'quotes' : '"',
+    'num_1'            : '1',
+    'num_2'            : '2',
+    'num_3'            : '3',
+    'num_4'            : '4',
+    'num_5'            : '5',
+    'num_6'            : '6',
+    'num_7'            : '7',
+    'num_8'            : '8',
+    'num_9'            : '9',
+    'num_0'            : '0',
+    'apostraphie'      : '\'',
+    'full_stop'        : '.',
+    'comma'            : ',',
+    'quotes'           : '"',
     'exclamation_mark' : '!',
-    'question_mark' : '?',
-    'left_arrow' : '<',
-    'right_arrow' : '>'
+    'question_mark'    : '?',
+    'left_arrow'       : '<',
+    'right_arrow'      : '>',
+    'star'             : '*'
 }
 
 letters_dict = {}
@@ -56,9 +57,11 @@ for letter in cmds.listRelatives('letters'):
         'data' : lines}
     
     letters_dict[resolved_letter] = letter_dict
+
+letters_dict[' '] = {'bbox' : [1, 0.5, 0, 0], 'data' : []}
         
         
-print json.dumps(letters_dict)
+print json.dumps(letters_dict) + ';'
         
         
         

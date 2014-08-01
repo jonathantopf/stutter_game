@@ -21,6 +21,12 @@ Commands.BaseCommand.updateWrapper = function (tick)
     this.cycle ++;
 }
 
+Commands.BaseCommand.init = function ()
+
+{
+
+}
+
 
 // ----------------------------------------------------------------------------------------------------
 // Wait
@@ -107,11 +113,6 @@ Commands.Speak.prototype.constructor = Commands.Speak;
 
 Commands.Speak.prototype.update = function ()
 {    
-    if (this.cycle == 0)
-    {
-        this.buffer.append(this.text, this.args);
-    }
-
     if (this.mouth_phase == 0)
     {
         this.singer.talk();
@@ -130,6 +131,11 @@ Commands.Speak.prototype.update = function ()
     }
 }  
 
+Commands.Speak.prototype.init = function ()
+{
+    this.buffer.append(this.text, this.args);
+}
+
 
 // ----------------------------------------------------------------------------------------------------
 // SongDemo
@@ -142,10 +148,7 @@ Commands.SongDemo = function (tag, song, singer, bpm)
     this.singer = singer;
     this.ticks_per_mesure = Math.round(bpm / 16); // 16 mesures per bar
 
-    this.mesure_phase = 0;
-    this.mesure = 0;
-
-    this.song_step = 0;
+    this.init();
 
     this.key_mapping = {
         'C' : 'A', 
@@ -198,7 +201,68 @@ Commands.SongDemo.prototype.update = function ()
     this.mesure_phase --;
 }  
 
+Commands.SongDemo.prototype.init = function ()
+{
+    this.mesure_phase = 0;
+    this.mesure = 0;
+    this.song_step = 0;
+}
 
+
+// ----------------------------------------------------------------------------------------------------
+// ABSwitch
+// ----------------------------------------------------------------------------------------------------
+
+Commands.ABSwitch = function (tag, buffer, a_text, a_key, b_text, b_key)
+{
+    Commands.BaseCommand.call(this, tag);
+    this.buffer = buffer;
+
+    this.a_text = a_text;
+    this.a_key = a_key;
+    this.b_text = b_text;
+    this.b_key = b_key;
+}
+
+Commands.ABSwitch.prototype = Object.create(Commands.BaseCommand)
+Commands.ABSwitch.prototype.constructor = Commands.ABSwitch;
+
+Commands.ABSwitch.prototype.update = function ()
+{    
+    if (this.cycle == 1) {
+        this.b_arrow.hide();
+    }
+
+    if (Keyboard.status['up'] == 1)
+    {
+        this.a_arrow.show();
+        this.b_arrow.hide();
+        this.next_key = Logic.script_key_pairs[this.a_key];
+    } else if (Keyboard.status['down'] == 1)
+    {
+        this.a_arrow.hide();
+        this.b_arrow.show();
+        this.next_key = Logic.script_key_pairs[this.b_key];
+    } else if (Keyboard.status['enter'] == 1)
+    {
+        this.completed = true;
+    }
+}  
+
+Commands.ABSwitch.prototype.init = function() {
+    var args = {visible : true};
+    this.buffer.init();
+    this.buffer.append(this.a_text,  args);
+    this.buffer.append(' *', args);
+    this.a_arrow = this.buffer.chars[this.buffer.chars.length -1];
+    this.buffer.append('\n', args);
+    this.buffer.append(this.b_text, args);
+    this.buffer.append(' *', args);
+    this.b_arrow = this.buffer.chars[this.buffer.chars.length -1];
+    this.buffer.busy = false;   
+    this.b_arrow.hide();
+    this.next_key = Logic.script_key_pairs[this.a_key];
+}
 
 // ----------------------------------------------------------------------------------------------------
 // ClearBuffer
@@ -215,7 +279,7 @@ Commands.ClearBuffer.prototype.constructor = Commands.ClearBuffer;
 
 Commands.ClearBuffer.prototype.update = function ()
 {    
-    this.buffer.init()
+    this.buffer.init();
     this.completed = true;
 }  
 

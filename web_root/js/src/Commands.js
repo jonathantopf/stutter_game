@@ -178,7 +178,7 @@ Commands.SongDemo.prototype.update = function ()
             if (this.song[this.mesure][i] == 1)
             {
                 Sound.synth[Sound.scale[i]].play();
-                this.singer.demoKey(this.key_mapping[Sound.scale[i]]);
+                this.singer.demoKey(Commands.key_mapping[Sound.scale[i]]);
                 singing = true;
             } else {
                 Sound.synth[Sound.scale[i]].pause();
@@ -263,6 +263,148 @@ Commands.ABSwitch.prototype.init = function() {
     this.b_arrow.hide();
     this.next_key = Logic.script_key_pairs[this.a_key];
 }
+
+
+// ----------------------------------------------------------------------------------------------------
+// SongTest
+// ----------------------------------------------------------------------------------------------------
+
+Commands.SongTest = function (tag, buffer, song, singer, success_tag, fail_tag)
+{
+    Commands.BaseCommand.call(this, tag);
+    this.buffer = buffer;
+    this.song = song;
+    this.singer = singer;
+
+    this.success_tag = success_tag;
+    this.fail_tag = fail_tag;
+
+    this.current_note = null;
+
+    this.note_stack = [];
+
+}
+
+Commands.SongTest.prototype = Object.create(Commands.BaseCommand)
+Commands.SongTest.prototype.constructor = Commands.SongTest;
+
+Commands.SongTest.prototype.update = function ()
+{   
+    // update stack
+    for (var i = 0; i < Sound.scale.length; i ++) 
+    {
+        if (Keyboard.status[Commands.key_mapping[Sound.scale[i]]] > 0)
+        {
+            this.pushNote(Sound.scale[i]);
+        } else {
+            this.popNote(Sound.scale[i]);
+        }
+    }
+
+    // play and stop sounds
+    for (var i = 0; i < Sound.scale.length; i ++) 
+    {
+        if (this.note_stack.length > 0)
+        {
+            if (this.note_stack[this.note_stack.length -1] != this.current_note) { // note has changed
+                // sounds
+                Sound.stopAll();
+                this.current_note = this.note_stack[this.note_stack.length -1] ;
+                Sound.synth[this.current_note].play();
+                // singer
+                this.singer.sing();
+            }
+        } else {
+            Sound.stopAll()
+            this.singer.talk('smile');
+            this.current_note = null;
+        }
+    }
+
+    var line_string = '';
+    for (var i = 0; i < this.song[0].length; i++)
+    {
+        if (this.song[this.current_song_step][i] == undefined)
+        {
+            line_string += '-';
+        } else {
+            line_string += '1';
+        }
+        line_string += ',';
+    }
+    console.log(line_string);
+
+}  
+
+Commands.SongTest.prototype.init = function ()
+{   
+    this.current_song_step = 0;
+}
+
+Commands.SongTest.prototype.advanceStep = function ()
+{
+    while (true)
+    {
+        this.current_song_step ++;
+        for (var i = 0; i < Sound.scale.length; i++)
+        {
+            if (this.song[this.current_song_step][i] != this.song[this.current_song_step - 1][i])
+            {
+                return;
+            }
+        }
+    }
+}
+
+Commands.SongTest.prototype.pushNote = function (note)
+{
+    for (var i = 0; i < this.note_stack.length; i++)
+    {
+        if (this.note_stack[i] == note)
+        {
+            return;
+        }
+    }
+
+    this.note_stack.push(note);
+}
+
+Commands.SongTest.prototype.popNote = function (note)
+{
+    for (var i = 0; i < this.note_stack.length; i++)
+    {
+        if (this.note_stack[i] == note)
+        {
+            this.note_stack.splice(i, 1);
+            return;
+        }
+    }
+
+}
+
+Commands.SongTest.prototype.compareSongToKeys = function ()
+{
+    for (var i = 0; i < Sound.scale.length; i++)
+    {
+        var is_top_note = this.isTopNote(Sound.scale[i]);
+
+        if (this.song[this.current_song_step] != 1 & is_top_note | this.song[this.current_song_step] == undefined & is_top_note)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+Commands.SongTest.prototype.isTopNote = function (note)
+{
+    if (this.note_stack[this.note_stack.length - 1] == note) 
+        { 
+            return true; 
+        }
+    return false;
+}
+
 
 // ----------------------------------------------------------------------------------------------------
 // ClearBuffer

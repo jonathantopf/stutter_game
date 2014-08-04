@@ -2,10 +2,21 @@ Sound = {};
 
 Sound.scale = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
 
+Sound.scale_ids = {};
+
+for (var i = 0; i < Sound.scale.length; i++)
+{
+    Sound.scale_ids[Sound.scale[i]] = i;
+}
+
+// NOTE: ONLY ONE NOTE PER LINE
+// SONGS MUST START AND END WITH BLANK LINE
+
 Sound.songs = {
     'testing' : [
 //       Note , style  
 //       C D E F G A B
+        [ , , , , , , ], // -    |
         [1, , , , , , ], // -----| 
         [ ,1, , , , , ], // -    |
         [ , ,1, , , , ], // --   |
@@ -21,11 +32,7 @@ Sound.songs = {
         [1, , , , , , ], // ---- | 
         [ , ,1, , , , ], // -    |
         [ , , , ,1, , ], // --   |
-        [ , , , , , ,1], // -    |
-        [ , , , , ,1, ], // -----|
-        [ , , ,1, , , ], // -    |
-        [ ,1, , , , , ], // --   |
-        [ , , , , , , ]  // -    |
+        [ , , , , , , ], // -    |
     ]
 };               
 
@@ -41,3 +48,12 @@ Sound.synth = {
     'A' : T("tri", {freq:1760.00}), 
     'B' : T("tri", {freq:1975.53})
 };
+
+
+Sound.stopAll = function ()
+{
+    for (var i = 0; i < Sound.scale.length ; i++)
+    {
+        Sound.synth[Sound.scale[i]].pause();
+    }
+}

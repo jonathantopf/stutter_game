@@ -2,6 +2,16 @@
 
 var Commands = {};
 
+Commands.key_mapping = {
+    'C' : 'A', 
+    'D' : 'S', 
+    'E' : 'D', 
+    'F' : 'F', 
+    'G' : 'G', 
+    'A' : 'H', 
+    'B' : 'J', 
+};
+
 // ----------------------------------------------------------------------------------------------------
 // BaseClass
 // ----------------------------------------------------------------------------------------------------
@@ -149,16 +159,6 @@ Commands.SongDemo = function (tag, song, singer, bpm)
     this.ticks_per_mesure = Math.round(bpm / 16); // 16 mesures per bar
 
     this.init();
-
-    this.key_mapping = {
-        'C' : 'A', 
-        'D' : 'B', 
-        'E' : 'D', 
-        'F' : 'F', 
-        'G' : 'G', 
-        'A' : 'H', 
-        'B' : 'J', 
-    };
 }
 
 Commands.SongDemo.prototype = Object.create(Commands.BaseCommand)

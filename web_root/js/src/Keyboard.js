@@ -13,16 +13,21 @@ var Keyboard = {}
 // 3 : released
 
 Keyboard.status = {
-    'a'     : 0,
-    's'     : 0,
-    'd'     : 0,
-    'f'     : 0,
-    'g'     : 0,
-    'h'     : 0,
-    'j'     : 0,
+    'A'     : 0,
+    'S'     : 0,
+    'D'     : 0,
+    'F'     : 0,
+    'G'     : 0,
+    'H'     : 0,
+    'J'     : 0,
     'down'  : 0,
     'up'    : 0,
     'enter' : 0
+}
+
+Keyboard.anyKeyPressed = function ()
+{
+
 }
 
 
@@ -38,39 +43,45 @@ function onKeyDown(event){
   var keyCode = event.keyCode;
   switch(keyCode){
     case 65: //a
-        if (Keyboard.status['a'] == 0)
+        if (Keyboard.status['A'] == 0)
         {
-            Keyboard.status['a'] = 1;
+            Keyboard.status['A'] = 1;
         }
     break;
     case 83: //s
-        if (Keyboard.status['s'] == 0)
+        if (Keyboard.status['S'] == 0)
         {
-            Keyboard.status['s'] = 1;
+            Keyboard.status['S'] = 1;
         }
     break;
     case 68: //d
-        if (Keyboard.status['d'] == 0)
+        if (Keyboard.status['D'] == 0)
         {
-            Keyboard.status['d'] = 1;
+            Keyboard.status['D'] = 1;
         }
     break;
     case 70: //f
-        if (Keyboard.status['f'] == 0)
+        if (Keyboard.status['F'] == 0)
         {
-            Keyboard.status['f'] = 1;
+            Keyboard.status['F'] = 1;
         }
     break;
     case 71: //g
-        if (Keyboard.status['g'] == 0)
+        if (Keyboard.status['G'] == 0)
         {
-            Keyboard.status['g'] = 1;
+            Keyboard.status['G'] = 1;
         }
     break;
     case 72: //h
-        if (Keyboard.status['h'] == 0)
+        if (Keyboard.status['H'] == 0)
         {
-            Keyboard.status['h'] = 1;
+            Keyboard.status['H'] = 1;
+        }
+    break;
+    case 74: //j
+        if (Keyboard.status['J'] == 0)
+        {
+            Keyboard.status['J'] = 1;
         }
     break;
     case 38: //up
@@ -98,45 +109,45 @@ function onKeyUp(event){
   var keyCode = event.keyCode;
   switch(keyCode){
     case 65: //a
-        if (Keyboard.status['a'] == 2)
+        if (Keyboard.status['A'] == 2)
         {
-            Keyboard.status['a'] = 3;
+            Keyboard.status['A'] = 3;
         }
     break;
     case 83: //s
-        if (Keyboard.status['s'] == 2)
+        if (Keyboard.status['S'] == 2)
         {
-            Keyboard.status['s'] = 3;
+            Keyboard.status['S'] = 3;
         }
     break;
     case 68: //d
-        if (Keyboard.status['d'] == 2)
+        if (Keyboard.status['D'] == 2)
         {
-            Keyboard.status['d'] = 3;
+            Keyboard.status['D'] = 3;
         }
     break;
     case 70: //f
-        if (Keyboard.status['f'] == 2)
+        if (Keyboard.status['F'] == 2)
         {
-            Keyboard.status['f'] = 3;
+            Keyboard.status['F'] = 3;
         }
     break;
     case 71: //g
-        if (Keyboard.status['g'] == 2)
+        if (Keyboard.status['G'] == 2)
         {
-            Keyboard.status['g'] = 3;
+            Keyboard.status['G'] = 3;
         }
     break;
     case 72: //h
-        if (Keyboard.status['h'] == 2)
+        if (Keyboard.status['H'] == 2)
         {
-            Keyboard.status['h'] = 3;
+            Keyboard.status['H'] = 3;
         }
     break;
     case 74: //j
-        if (Keyboard.status['j'] == 2)
+        if (Keyboard.status['J'] == 2)
         {
-            Keyboard.status['j'] = 3;
+            Keyboard.status['J'] = 3;
         }
     break;
     case 38: //up

@@ -32,7 +32,6 @@ Commands.BaseCommand.updateWrapper = function (tick)
 }
 
 Commands.BaseCommand.init = function ()
-
 {
 
 }

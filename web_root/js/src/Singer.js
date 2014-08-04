@@ -56,7 +56,7 @@ Singer.Character = function ()
     // demo keys
     this.demo_objects = {
         'A' : new Singer.DemoBubble('A'),
-        'B' : new Singer.DemoBubble('B'),
+        'S' : new Singer.DemoBubble('S'),
         'D' : new Singer.DemoBubble('D'),
         'F' : new Singer.DemoBubble('F'),
         'G' : new Singer.DemoBubble('G'),

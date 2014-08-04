@@ -457,6 +457,26 @@ Commands.ClearBuffer.prototype.update = function ()
 {    
     this.buffer.init();
     this.completed = true;
+} 
+
+
+// ----------------------------------------------------------------------------------------------------
+// GoTo
+// ----------------------------------------------------------------------------------------------------
+
+Commands.GoTo = function (tag, dest_tag)
+{
+    Commands.BaseCommand.call(this, tag);
+    this.dest_tag = dest_tag;
+}
+
+Commands.GoTo.prototype = Object.create(Commands.BaseCommand)
+Commands.GoTo.prototype.constructor = Commands.GoTo;
+
+Commands.GoTo.prototype.update = function ()
+{    
+    this.next_key = Logic.script_key_pairs[this.dest_tag];
+    this.completed = true;
 }  
 
 

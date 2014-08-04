@@ -323,6 +323,7 @@ Commands.SongTest.prototype.update = function ()
         }
     }
 
+    // print current song notes
     var line_string = '';
     for (var i = 0; i < this.song[0].length; i++)
     {
@@ -336,6 +337,23 @@ Commands.SongTest.prototype.update = function ()
     }
     console.log(line_string);
 
+    // check validity of current note
+    var song_key_comparison = this.compareSongToKeys();
+    if (song_key_comparison == true) 
+    {
+        if (this.current_song_step == this.song.length - 1)
+        {
+            this.completed = true;
+            this.next_key = Logic.script_key_pairs[this.success_tag];
+            return;
+        }
+        
+        this.advanceStep();
+    } else if (song_key_comparison = false) {
+        this.completed = true;
+        this.next_key = Logic.script_key_pairs[this.fail_tag];
+        return;
+    }
 }  
 
 Commands.SongTest.prototype.init = function ()
@@ -384,26 +402,40 @@ Commands.SongTest.prototype.popNote = function (note)
 
 }
 
+
 Commands.SongTest.prototype.compareSongToKeys = function ()
 {
-    for (var i = 0; i < Sound.scale.length; i++)
-    {
-        var is_top_note = this.isTopNote(Sound.scale[i]);
+    var top_note = this.note_stack[this.note_stack.length - 1];
 
-        if (this.song[this.current_song_step] != 1 & is_top_note | this.song[this.current_song_step] == undefined & is_top_note)
+    // if no note is playing
+    if (top_note == undefined)
+    {
+        for (var i = 0; i < Sound.scale.length; i++)
         {
-            return false;
+            if (this.song[this.current_song_step][i] == 1)
+            {
+                return null;
+            }
         }
+        return true;
     }
-    return true;
+
+    // if note is playing
+    if (this.song[this.current_song_step][Sound.scale_ids[top_note]] == 1)
+    {
+        return true
+    }
+
+    return false
 }
+
 
 Commands.SongTest.prototype.isTopNote = function (note)
 {
     if (this.note_stack[this.note_stack.length - 1] == note) 
-        { 
-            return true; 
-        }
+    { 
+        return true; 
+    }
     return false;
 }
 

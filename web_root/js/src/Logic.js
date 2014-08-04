@@ -49,7 +49,10 @@ Logic.init = function ()
         new Commands.SongDemo       (null,           Sound.songs['testing'], Logic.singer, 300),
         new Commands.Sleep          (null,           2),
   
-        new Commands.ABSwitch       ('ab'            ,Logic.text_buffer, 'give it a go', 'lights_down', 'show me again', 'example_1'),
+        new Commands.ABSwitch       ('ab',           Logic.text_buffer, 'give it a go', 'song_1', 'show me again', 'example_1'),
+        new Commands.ClearBuffer    ('song_1',       Logic.text_buffer),
+
+        new Commands.SongTest       (null,           Logic.text_buffer, Sound.songs['testing'], Logic.singer, 'lights_down', 'ab'),
 
         new Commands.Lights         ('lights_down',  Logic.light_rig.lights['key'], {value : 0, speed : 0.02}),
         new Commands.ClearBuffer    (null,           Logic.text_buffer),

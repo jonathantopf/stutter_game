@@ -169,7 +169,6 @@ Commands.SongDemo.prototype.update = function ()
     if (this.mesure_phase == 0)
     {
         this.mesure_phase = this.ticks_per_mesure;
-        this.mesure ++; 
 
         var singing = false
 
@@ -185,6 +184,9 @@ Commands.SongDemo.prototype.update = function ()
             }
         }
 
+        this.mesure ++; 
+
+
         if (singing)
         {
             this.singer.talk('ooo');
@@ -193,7 +195,7 @@ Commands.SongDemo.prototype.update = function ()
         }
     }
 
-    if (this.song.length == this.mesure + 1)
+    if (this.song.length == this.mesure)
     {
         this.completed = true;
     }

@@ -297,6 +297,7 @@ Commands.SongTest.prototype.update = function ()
         if (Keyboard.status[Commands.key_mapping[Sound.scale[i]]] > 0)
         {
             this.pushNote(Sound.scale[i]);
+            this.buffer.init();
         } else {
             this.popNote(Sound.scale[i]);
         }

@@ -165,37 +165,44 @@ Commands.SongDemo.prototype.constructor = Commands.SongDemo;
 
 Commands.SongDemo.prototype.update = function ()
 {    
-    if (this.mesure_phase == 0)
-    {
-        this.mesure_phase = this.ticks_per_mesure;
-
-        var singing = false
-
-        for (var i = 0; i < Sound.scale.length; i ++)
+    console.log(this.mesure);
+    if (this.song.length != this.mesure)
+    {   
+        if (this.mesure_phase == 0)
         {
-            if (this.song[this.mesure][i] == 1)
+            this.mesure_phase = this.ticks_per_mesure;
+
+            var singing = false
+
+            for (var i = 0; i < Sound.scale.length; i ++)
             {
-                Sound.synth[Sound.scale[i]].play();
-                this.singer.demoKey(Commands.key_mapping[Sound.scale[i]]);
-                singing = true;
+                if (this.song[this.mesure][i] == 1)
+                {
+                    Sound.synth[Sound.scale[i]].play();
+                    this.singer.demoKey(Commands.key_mapping[Sound.scale[i]]);
+                    singing = true;
+                } else {
+                    Sound.synth[Sound.scale[i]].pause();
+                }
+            }
+
+            this.mesure ++; 
+
+
+            if (singing)
+            {
+                this.singer.talk('ooo');
             } else {
-                Sound.synth[Sound.scale[i]].pause();
+                this.singer.talk('smile');
             }
         }
 
-        this.mesure ++; 
-
-
-        if (singing)
-        {
-            this.singer.talk('ooo');
-        } else {
-            this.singer.talk('smile');
-        }
     }
 
-    if (this.song.length == this.mesure)
+    if (this.song.length == this.mesure & this.mesure_phase == 0)
     {
+        Sound.stopAll ();
+        this.singer.talk('smile');
         this.completed = true;
     }
 
